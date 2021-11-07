@@ -1,0 +1,33 @@
+int led[]={1,2,3,4};
+int Sequence[31]={};
+int buttonBleu=1;
+ 
+void setup() {
+  pinMode(2, OUTPUT);
+  pinMode(3, OUTPUT);
+  pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
+  pinMode(A2, INPUT);
+  pinMode(A3, INPUT);
+  pinMode(A4, INPUT);
+  pinMode(A5, INPUT);
+  
+  do{
+    buttonBleu=digitalRead(A2);
+    }
+  while(buttonBleu==1);
+}
+
+void loop() {
+
+  buttonBleu=digitalRead(A2);
+  if(buttonBleu==1){
+    digitalWrite(2, HIGH);
+    }
+
+    if(buttonBleu==1){
+    digitalWrite(3, HIGH);
+    }
+  
+  
+}
