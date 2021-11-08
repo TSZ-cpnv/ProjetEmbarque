@@ -1,9 +1,12 @@
+#include "Musique.h"
 
+int frequenceNote[]={329,261,220,163};
+int debounce[]={0,0,0,0};
 int sequence[]={};
 int led[]={2,3,4,5};
 int compteur=1;
 
-int tonePin = 6;
+
 
 int boutonBleu=0;
 int boutonJaune=0;
@@ -16,29 +19,36 @@ int perdu=0;
 
 void setup() {
   randomSeed(analogRead(0));
-  pinMode(2, OUTPUT);
-  pinMode(3, OUTPUT);
-  pinMode(4, OUTPUT);
-  pinMode(5, OUTPUT);
+  for(int i = 2; i < 6; i++)
+  {
+    pinMode(i, OUTPUT);
+  }
+
   pinMode(A2, INPUT_PULLUP);
   pinMode(A3, INPUT_PULLUP);
   pinMode(A4, INPUT_PULLUP);
   pinMode(A5, INPUT_PULLUP);
- 
-  while(digitalRead(A2)==HIGH){}
+  
+  
   sequence[compteur-1]= random(2,6);
-  musique();
+  
+
   
 }
 
 void loop(){
-  
-  
+  if (digitalRead(A2)==LOW)
+  {
+    musiqueIntro();
+    
+  do{
   //affiche la sequence
+  delay(500);
   for (int i = 0; i < compteur; i++) {
-    delay(1000);
+    delay(250);
     digitalWrite(sequence[i], HIGH);
-    delay(2000);
+    tone(tonePin, frequenceNote[(sequence[i]-2)], 500);
+    delay(500);
     digitalWrite(sequence[i], LOW);    
     }
     
@@ -50,116 +60,96 @@ void loop(){
       boutonVert=digitalRead(A5);
 
       // Regarde si le bouton appuier est le bon
-      if(boutonBleu==LOW && led[0]==sequence[bonneReponse]){  
-          bonneReponse++;       
-        }else{ 
-          perdu++;    
+      //Bouton bleu
+      if(boutonBleu==LOW && led[0]==sequence[bonneReponse] && debounce[0]==0)
+      {     
+        noteBleu();
+          bonneReponse++;          
+          debounce[0]=1;              
+        }else if(boutonBleu==LOW && led[0]!=sequence[bonneReponse] && debounce[0]==0)
+        {  
+          musiquePerdu();     
+          perdu++;         
+          debounce[0]=1;            
+        }       
+      if(boutonBleu==HIGH && debounce[0]==1){
+        debounce[0]=0;
         }
 
-        if(boutonJaune==LOW && led[1]==sequence[bonneReponse]){    
-          bonneReponse++;           
-        }else{  
-          perdu++;      
-        }
+      //Bouton jaune
+      if(boutonJaune==LOW && led[1]==sequence[bonneReponse] && debounce[1]==0)
+      {  
+        noteJaune();
+          bonneReponse++;          
+          debounce[1]=1;              
+        }else if(boutonJaune==LOW && led[1]!=sequence[bonneReponse] && debounce[1]==0)
+        { 
+          musiquePerdu(); 
+          perdu++;         
+          debounce[1]=1;            
+        }       
+      if(boutonJaune==HIGH && debounce[1]==1){
+        debounce[1]=0;
+        }  
 
-        if(boutonRouge==LOW && led[2]==sequence[bonneReponse]){     
-          bonneReponse++;     
-        }else{
-          perdu++;
-        }
+      //Bouton rouge
+      if(boutonRouge==LOW && led[2]==sequence[bonneReponse] && debounce[2]==0)
+      {  
+        noteRouge();
+          bonneReponse++;          
+          debounce[2]=1;              
+        }else if(boutonRouge==LOW && led[2]!=sequence[bonneReponse] && debounce[2]==0)
+        { 
+          musiquePerdu(); 
+          perdu++;         
+          debounce[2]=1;            
+        }       
+      if(boutonRouge==HIGH && debounce[2]==1){
+        debounce[2]=0;
+        } 
 
-        if(boutonVert==LOW && led[3]==sequence[bonneReponse]){ 
-          bonneReponse++;                
-        }else{ 
-          perdu++;      
-        }
-        
-  }while(perdu!=1 || bonneReponse!=(compteur-1));
+      //Bouton vert
+      if(boutonVert==LOW && led[3]==sequence[bonneReponse] && debounce[3]==0)
+      {  
+        noteVert();
+          bonneReponse++;          
+          debounce[3]=1;              
+        }else if(boutonVert==LOW && led[3]!=sequence[bonneReponse] && debounce[3]==0)
+        { 
+         musiquePerdu(); 
+          perdu++;         
+          debounce[3]=1;            
+        }       
+      if(boutonVert==HIGH && debounce[3]==1){
+        debounce[3]=0;
+        } 
+     
+  }while(perdu!=1 && bonneReponse!=compteur);
 
-  if(perdu==1){
-    digitalWrite(2, HIGH);
+  
+  
+    if(bonneReponse==compteur){   
+      compteur++;
+      bonneReponse=0;
+      sequence[compteur-1]= random(2,6);
+
+      
+      }
+    
+    if(perdu==1){    
       compteur=1;
       bonneReponse=0;
-      perdu=0;   
+      perdu=0;
+      
+      }
+    } while ((compteur-1)!=31);
+    delay(500);
+    musiqueGagner();
+    compteur=1;
   }
   
-  if(bonneReponse==(compteur-1)){
-    digitalWrite(3, HIGH);
-    perdu=0;
-    compteur++;
-    bonneReponse=0;
-    sequence[compteur-1]= random(2,6);
-    }
-
   
      
 }
 
-void musique() 
-{
-    tone(tonePin, 391, 118.990575);
-    delay(120.1925);
-    delay(120.1925);
-    tone(tonePin, 391, 118.990575);
-    delay(120.1925);
-    delay(120.1925);
-    tone(tonePin, 391, 118.990575);
-    delay(120.1925);
-    delay(120.1925);
-    tone(tonePin, 391, 237.98115);
-    delay(240.385);
-    tone(tonePin, 415, 118.990575);
-    delay(120.1925);
-    tone(tonePin, 391, 118.990575);
-    delay(120.1925);
-    tone(tonePin, 349, 118.990575);
-    delay(120.1925);
-    tone(tonePin, 391, 118.990575);
-    delay(120.1925);
-    delay(120.1925);
-    tone(tonePin, 349, 118.990575);
-    delay(120.1925);
-    delay(120.1925);
-    tone(tonePin, 311, 237.98115);
-    delay(240.385);
-    delay(120.1925);
-    tone(tonePin, 311, 118.990575);
-    delay(120.1925);
-    delay(120.1925);
-    tone(tonePin, 311, 118.990575);
-    delay(120.1925);
-    delay(120.1925);
-    tone(tonePin, 311, 237.98115);
-    delay(240.385);
-    tone(tonePin, 293, 237.98115);
-    delay(240.385);
-    tone(tonePin, 311, 237.98115);
-    delay(240.385);
-    tone(tonePin, 349, 237.98115);
-    delay(240.385);
-    tone(tonePin, 391, 475.9623);
-    delay(480.77);
-    tone(tonePin, 311, 356.971725);
-    delay(360.5775);
-    delay(120.1925);
-    tone(tonePin, 311, 237.98115);
-    delay(240.385);
-    tone(tonePin, 293, 237.98115);
-    delay(240.385);
-    tone(tonePin, 311, 237.98115);
-    delay(240.385);
-    tone(tonePin, 349, 237.98115);
-    delay(240.385);
-    tone(tonePin, 391, 475.9623);
-    delay(480.77);
-    tone(tonePin, 391, 475.9623);
-    delay(480.77);
-    tone(tonePin, 311, 237.98115);
-    delay(240.385);
-    tone(tonePin, 391, 475.9623);
-    delay(480.77);
-    tone(tonePin, 349, 475.9623);
-    delay(480.77);
-    tone(tonePin, 311, 594.952875);
-    delay(600.9625);
-}
+
