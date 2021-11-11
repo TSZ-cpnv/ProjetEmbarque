@@ -1,5 +1,5 @@
 int tonePin = 6;
-int led[]={2,3,4,5};
+int led[4]={2,3,4,5};
 
 int randomLed;
 int nombreRandom;
@@ -215,21 +215,25 @@ void musiqueGagner(){
 }
 
 void noteBleu(){
-    tone(tonePin,329, 200);
-    delay(200);
+    tone(tonePin,329);
+    digitalWrite(led[0], HIGH);
+    delay(100);
 }
 void noteJaune(){
-    tone(tonePin,261, 200);
-    delay(200);
+    tone(tonePin,261);
+    digitalWrite(led[1], HIGH);   
+    delay(100);
 }
 void noteRouge(){
-    tone(tonePin,220, 200);
-    delay(200);
+    tone(tonePin,220);
+    digitalWrite(led[2], HIGH);  
+    delay(100);
 }
 void noteVert(){
-    tone(tonePin,163, 200);
+    tone(tonePin,163);  
+    digitalWrite(led[3], HIGH);
+    delay(100);
     
-    delay(200);
 }
 void notePerdu(){
     tone(tonePin,33, 500);
